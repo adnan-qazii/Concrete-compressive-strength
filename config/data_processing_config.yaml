@@ -1,0 +1,10 @@
+data_processing:
+  input_data_path: data/2_feature_selection/normalized_concrete_data.csv
+  output_dir: data/3_train_test_data
+  save_format: csv
+  target_column: concrete_compressive_strength
+  train_test_split:
+    random_state: 42
+    shuffle: true
+    stratify: false
+    test_size: 0.2

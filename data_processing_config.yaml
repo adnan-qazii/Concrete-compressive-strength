@@ -1,0 +1,52 @@
+# Data Processing Configuration
+# Configure train-test split parameters for concrete strength prediction
+
+data_processing:
+  # Input data path (from feature selection step)
+  input_data_path: 'data/2_feature_selection/normalized_concrete_data.csv'
+  
+  # Output directory for split data
+  output_dir: 'data/3_train_test_data'
+  
+  # Target column name
+  target_column: 'concrete_compressive_strength'
+  
+  # Train-Test Split Parameters
+  train_test_split:
+    test_size: 0.2          # Percentage of data for testing (0.2 = 20%)
+    random_state: 42        # Random seed for reproducibility
+    shuffle: True           # Shuffle data before splitting
+    stratify: False         # Set to True for classification tasks
+  
+  # Save format for output files
+  save_format: 'csv'        # Options: 'csv' or 'pickle'
+  
+  # Logging configuration
+  logging:
+    level: 'DEBUG'          # Options: DEBUG, INFO, WARNING, ERROR
+    log_to_file: True       # Save logs to file
+    log_file: 'logs/data_processing.log'
+
+# Alternative configurations (uncomment to use)
+# Uncomment and modify these sections for different split ratios
+
+# # 70-30 Split
+# train_test_split:
+#   test_size: 0.3
+#   random_state: 42
+#   shuffle: True
+#   stratify: False
+
+# # 85-15 Split
+# train_test_split:
+#   test_size: 0.15
+#   random_state: 42
+#   shuffle: True
+#   stratify: False
+
+# # Different random seeds for experimentation
+# train_test_split:
+#   test_size: 0.2
+#   random_state: 123       # Try different seeds: 42, 123, 456, 789
+#   shuffle: True
+#   stratify: False
