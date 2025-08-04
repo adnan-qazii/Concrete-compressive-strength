@@ -1,0 +1,20 @@
+HYPERPARAMETER TUNING SUMMARY RESULTS
+======================================================================
+
+Tuning Date: 2025-08-04 20:34:07
+Models Tuned: Random Forest, XGBoost, Extra Trees
+Default Iterations per Model: 10
+Cross-Validation Folds: 3
+Scoring Metric: r2
+
+BEST MODEL PERFORMANCE AFTER TUNING:
+----------------------------------------------------------------------
+Model           Best CV    Test R²    Test RMSE    Test MAE  
+----------------------------------------------------------------------
+XGBoost         0.9191     0.9368     4.30         2.86      
+Random Forest   0.8902     0.9110     5.10         3.72      
+Extra Trees     0.8759     0.8859     5.77         4.20      
+
+BEST OVERALL MODEL: XGBoost
+Best Test R² Score: 0.936815
+Best CV Score: 0.919100

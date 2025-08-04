@@ -1,0 +1,66 @@
+FEATURE IMPORTANCE ANALYSIS
+==================================================
+
+RANDOM FOREST - FEATURE IMPORTANCE:
+----------------------------------------
+water_powder_ratio            : 0.289188
+cement_quality_index          : 0.147808
+age                           : 0.111336
+log_age                       : 0.104174
+sqrt_age                      : 0.103944
+age_category_early            : 0.046281
+water_cement_ratio            : 0.043854
+total_powder                  : 0.037756
+total_cement                  : 0.037309
+water                         : 0.014503
+cement                        : 0.013320
+superplasticizer              : 0.011059
+total_material                : 0.010701
+cement_material_ratio         : 0.010012
+scm_cement_ratio              : 0.009230
+coarse_aggregate              : 0.008786
+age_category_extended         : 0.000510
+age_category_longterm         : 0.000229
+
+XGBOOST - FEATURE IMPORTANCE:
+----------------------------------------
+log_age                       : 0.240145
+water_powder_ratio            : 0.191079
+age                           : 0.145876
+cement_quality_index          : 0.140249
+total_powder                  : 0.087415
+water_cement_ratio            : 0.044227
+total_cement                  : 0.035538
+cement                        : 0.031430
+water                         : 0.018741
+superplasticizer              : 0.013112
+cement_material_ratio         : 0.012121
+total_material                : 0.009212
+coarse_aggregate              : 0.007883
+scm_cement_ratio              : 0.007724
+age_category_early            : 0.006282
+age_category_longterm         : 0.006068
+age_category_extended         : 0.002897
+sqrt_age                      : 0.000000
+
+EXTRA TREES - FEATURE IMPORTANCE:
+----------------------------------------
+water_powder_ratio            : 0.167882
+cement_quality_index          : 0.146352
+sqrt_age                      : 0.114542
+age_category_early            : 0.108833
+log_age                       : 0.084317
+total_powder                  : 0.083088
+age                           : 0.076067
+total_cement                  : 0.057056
+water_cement_ratio            : 0.046961
+water                         : 0.022076
+cement                        : 0.022031
+superplasticizer              : 0.018164
+cement_material_ratio         : 0.015906
+scm_cement_ratio              : 0.012638
+total_material                : 0.011108
+coarse_aggregate              : 0.007576
+age_category_extended         : 0.002807
+age_category_longterm         : 0.002596
+

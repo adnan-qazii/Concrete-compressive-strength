@@ -1,0 +1,70 @@
+HYPERPARAMETER TUNING RESULTS - XGBOOST
+================================================================================
+
+Total Parameter Combinations Tested: 10
+Best CV Score: 0.919100
+Best Parameters: {'colsample_bytree': np.float64(0.902144564127061), 'gamma': np.float64(0.21257793724562235), 'learning_rate': np.float64(0.07238249886045664), 'max_depth': 6, 'min_child_weight': 6, 'n_estimators': 240, 'random_state': 42, 'reg_alpha': np.float64(0.8422847745949985), 'reg_lambda': np.float64(0.44975413336976566), 'subsample': np.float64(0.7580600944007257)}
+
+ALL PARAMETER COMBINATIONS AND RESULTS:
+--------------------------------------------------------------------------------
+
+Combination #6:
+CV Score: 0.919100 (+/- 0.008297)
+Parameters: {'colsample_bytree': np.float64(0.902144564127061), 'gamma': np.float64(0.21257793724562235), 'learning_rate': np.float64(0.07238249886045664), 'max_depth': 6, 'min_child_weight': 6, 'n_estimators': 240, 'random_state': 42, 'reg_alpha': np.float64(0.8422847745949985), 'reg_lambda': np.float64(0.44975413336976566), 'subsample': np.float64(0.7580600944007257)}
+Fit Time: 0.714s
+Score Time: 0.012s
+--------------------------------------------------
+Combination #7:
+CV Score: 0.919077 (+/- 0.009831)
+Parameters: {'colsample_bytree': np.float64(0.9706635463175177), 'gamma': np.float64(0.36363599792821044), 'learning_rate': np.float64(0.1079622306417506), 'max_depth': 9, 'min_child_weight': 9, 'n_estimators': 239, 'random_state': 42, 'reg_alpha': np.float64(0.32533033076326434), 'reg_lambda': np.float64(0.388677289689482), 'subsample': np.float64(0.7085396127095583)}
+Fit Time: 0.875s
+Score Time: 0.010s
+--------------------------------------------------
+Combination #4:
+CV Score: 0.917828 (+/- 0.004503)
+Parameters: {'colsample_bytree': np.float64(0.8430179407605753), 'gamma': np.float64(0.08526206184364576), 'learning_rate': np.float64(0.029515477895583855), 'max_depth': 6, 'min_child_weight': 9, 'n_estimators': 365, 'random_state': 42, 'reg_alpha': np.float64(0.5632882178455393), 'reg_lambda': np.float64(0.3854165025399161), 'subsample': np.float64(0.6063865008880857)}
+Fit Time: 1.150s
+Score Time: 0.025s
+--------------------------------------------------
+Combination #3:
+CV Score: 0.916598 (+/- 0.012041)
+Parameters: {'colsample_bytree': np.float64(0.7216968971838151), 'gamma': np.float64(0.2623782158161189), 'learning_rate': np.float64(0.13958350559263474), 'max_depth': 3, 'min_child_weight': 3, 'n_estimators': 413, 'random_state': 42, 'reg_alpha': np.float64(0.5142344384136116), 'reg_lambda': np.float64(0.5924145688620425), 'subsample': np.float64(0.6185801650879991)}
+Fit Time: 0.440s
+Score Time: 0.009s
+--------------------------------------------------
+Combination #1:
+CV Score: 0.911650 (+/- 0.015544)
+Parameters: {'colsample_bytree': np.float64(0.749816047538945), 'gamma': np.float64(0.4753571532049581), 'learning_rate': np.float64(0.22959818254342154), 'max_depth': 7, 'min_child_weight': 7, 'n_estimators': 171, 'random_state': 42, 'reg_alpha': np.float64(0.15599452033620265), 'reg_lambda': np.float64(0.05808361216819946), 'subsample': np.float64(0.9464704583099741)}
+Fit Time: 0.303s
+Score Time: 0.007s
+--------------------------------------------------
+Combination #8:
+CV Score: 0.910064 (+/- 0.008605)
+Parameters: {'colsample_bytree': np.float64(0.9314950036607718), 'gamma': np.float64(0.17837666334679464), 'learning_rate': np.float64(0.09428035290621423), 'max_depth': 14, 'min_child_weight': 9, 'n_estimators': 206, 'random_state': 42, 'reg_alpha': np.float64(0.8021969807540397), 'reg_lambda': np.float64(0.07455064367977082), 'subsample': np.float64(0.9947547746402069)}
+Fit Time: 0.849s
+Score Time: 0.012s
+--------------------------------------------------
+Combination #2:
+CV Score: 0.909050 (+/- 0.006642)
+Parameters: {'colsample_bytree': np.float64(0.8404460046972835), 'gamma': np.float64(0.35403628889802274), 'learning_rate': np.float64(0.016175348288740735), 'max_depth': 4, 'min_child_weight': 8, 'n_estimators': 463, 'random_state': 42, 'reg_alpha': np.float64(0.21233911067827616), 'reg_lambda': np.float64(0.18182496720710062), 'subsample': np.float64(0.6733618039413735)}
+Fit Time: 0.687s
+Score Time: 0.011s
+--------------------------------------------------
+Combination #5:
+CV Score: 0.909019 (+/- 0.012901)
+Parameters: {'colsample_bytree': np.float64(0.6923575302488596), 'gamma': np.float64(0.12051273301300586), 'learning_rate': np.float64(0.21497905564763747), 'max_depth': 14, 'min_child_weight': 8, 'n_estimators': 480, 'random_state': 42, 'reg_alpha': np.float64(0.17336465350777208), 'reg_lambda': np.float64(0.3910606075732408), 'subsample': np.float64(0.672894435115225)}
+Fit Time: 1.378s
+Score Time: 0.014s
+--------------------------------------------------
+Combination #10:
+CV Score: 0.906569 (+/- 0.017791)
+Parameters: {'colsample_bytree': np.float64(0.9705203514053395), 'gamma': np.float64(0.32553851275097223), 'learning_rate': np.float64(0.28448790266313423), 'max_depth': 11, 'min_child_weight': 8, 'n_estimators': 317, 'random_state': 42, 'reg_alpha': np.float64(0.3308980248526492), 'reg_lambda': np.float64(0.06355835028602363), 'subsample': np.float64(0.7243929286862649)}
+Fit Time: 0.795s
+Score Time: 0.009s
+--------------------------------------------------
+Combination #9:
+CV Score: 0.828839 (+/- 0.001722)
+Parameters: {'colsample_bytree': np.float64(0.908897907718663), 'gamma': np.float64(0.0993578407670862), 'learning_rate': np.float64(0.01165663513708072), 'max_depth': 13, 'min_child_weight': 3, 'n_estimators': 130, 'random_state': 42, 'reg_alpha': np.float64(0.71134195274865), 'reg_lambda': np.float64(0.7901755405312056), 'subsample': np.float64(0.8423839899124046)}
+Fit Time: 1.412s
+Score Time: 0.009s
+--------------------------------------------------

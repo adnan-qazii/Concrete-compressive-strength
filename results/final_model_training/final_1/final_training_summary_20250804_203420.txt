@@ -1,0 +1,17 @@
+FINAL MODEL TRAINING RESULTS
+============================================================
+
+Training Date: 2025-08-04 20:34:20
+Configuration Used: auto
+
+MODEL PERFORMANCE RANKING:
+------------------------------------------------------------
+Model           Test R²    Test RMSE    CV Mean   
+------------------------------------------------------------
+XGBoost         0.9415     4.13         0.9189    
+Random Forest   0.9020     5.35         0.8933    
+Extra Trees     0.8939     5.57         0.8876    
+
+BEST MODEL: XGBoost
+Best Test R² Score: 0.941485
+Best Test RMSE: 4.1348

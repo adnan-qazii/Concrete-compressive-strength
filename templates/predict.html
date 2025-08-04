@@ -1,0 +1,617 @@
+{% extends "base.html" %}
+
+{% block title %}AI Prediction - ConcreteML AI Platform{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header animate__animated animate__fadeInDown">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-brain"></i> AI Prediction
+            </h1>
+            <p class="text-muted mb-0">Predict concrete compressive strength using advanced AI models</p>
+        </div>
+        <div class="text-end">
+            <div class="small text-muted">Powered by</div>
+            <div class="fw-bold text-primary">Machine Learning</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Input Form -->
+    <div class="col-lg-8">
+        <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="card-header">
+                <h5>
+                    <i class="fas fa-flask text-primary"></i>
+                    Concrete Mix Properties
+                </h5>
+                <small class="text-muted">Enter the composition of your concrete mix</small>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="predictionForm">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="input-group-container">
+                                <div class="mb-4">
+                                    <label for="cement" class="form-label">
+                                        <i class="fas fa-layer-group text-primary"></i>
+                                        Cement (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="cement" name="cement" 
+                                               value="{{ features.cement if features else '300' }}" required min="100" max="500">
+                                        <span class="input-group-text bg-primary text-white">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Typical range: 100-500 kg/m³</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="blast_furnace_slag" class="form-label">
+                                        <i class="fas fa-mountain text-secondary"></i>
+                                        Blast Furnace Slag (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="blast_furnace_slag" name="blast_furnace_slag" 
+                                               value="{{ features.blast_furnace_slag if features else '0' }}" required min="0" max="300">
+                                        <span class="input-group-text bg-secondary text-white">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Supplementary cementitious material</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="fly_ash" class="form-label">
+                                        <i class="fas fa-smog text-warning"></i>
+                                        Fly Ash (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="fly_ash" name="fly_ash" 
+                                               value="{{ features.fly_ash if features else '0' }}" required min="0" max="200">
+                                        <span class="input-group-text bg-warning text-dark">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Pozzolanic material for improved durability</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="water" class="form-label">
+                                        <i class="fas fa-tint text-info"></i>
+                                        Water (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="water" name="water" 
+                                               value="{{ features.water if features else '180' }}" required min="120" max="250">
+                                        <span class="input-group-text bg-info text-white">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Critical for strength - Lower is typically better</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="input-group-container">
+                                <div class="mb-4">
+                                    <label for="superplasticizer" class="form-label">
+                                        <i class="fas fa-magic text-success"></i>
+                                        Superplasticizer (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="superplasticizer" name="superplasticizer" 
+                                               value="{{ features.superplasticizer if features else '0' }}" required min="0" max="30">
+                                        <span class="input-group-text bg-success text-white">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Chemical admixture for workability</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="coarse_aggregate" class="form-label">
+                                        <i class="fas fa-cubes text-dark"></i>
+                                        Coarse Aggregate (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="coarse_aggregate" name="coarse_aggregate" 
+                                               value="{{ features.coarse_aggregate if features else '1000' }}" required min="800" max="1200">
+                                        <span class="input-group-text bg-dark text-white">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Gravel, crushed stone (>4.75mm)</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="fine_aggregate" class="form-label">
+                                        <i class="fas fa-grip-lines text-warning"></i>
+                                        Fine Aggregate (kg/m³)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control form-control-lg" id="fine_aggregate" name="fine_aggregate" 
+                                               value="{{ features.fine_aggregate if features else '750' }}" required min="600" max="900">
+                                        <span class="input-group-text bg-warning text-dark">kg/m³</span>
+                                    </div>
+                                    <div class="form-text">Sand, fine particles (<4.75mm)</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="age" class="form-label">
+                                        <i class="fas fa-calendar-alt text-danger"></i>
+                                        Curing Age (days)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control form-control-lg" id="age" name="age" 
+                                               value="{{ features.age if features else '28' }}" required min="1" max="365">
+                                        <span class="input-group-text bg-danger text-white">days</span>
+                                    </div>
+                                    <div class="form-text">Standard testing age: 28 days</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Calculations Display -->
+                    <div class="row mt-4 pt-4 border-top">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-calculator"></i>
+                                Calculated Ratios (Updated in Real-time)
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-primary">Cement/Water Ratio</h6>
+                                            <div class="display-6 fw-bold text-primary" id="cementWaterRatio">1.67</div>
+                                            <small class="text-muted">Higher = Stronger</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-success">Total Binder</h6>
+                                            <div class="display-6 fw-bold text-success" id="totalBinder">300</div>
+                                            <small class="text-muted">kg/m³</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-warning">Age Factor</h6>
+                                            <div class="display-6 fw-bold text-warning" id="ageFactor">1.0</div>
+                                            <small class="text-muted">Normalized</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg prediction-btn">
+                                    <i class="fas fa-brain"></i>
+                                    <span class="btn-text">Predict Compressive Strength</span>
+                                    <div class="loading-spinner" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i> Processing...
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Panel -->
+    <div class="col-lg-4">
+        <!-- Prediction Result -->
+        {% if prediction %}
+        <div class="card border-success animate__animated animate__bounceIn">
+            <div class="card-header bg-gradient text-white" style="background: var(--success-gradient);">
+                <h5>
+                    <i class="fas fa-trophy"></i>
+                    AI Prediction Result
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="prediction-result">
+                    <div class="prediction-icon mb-3">
+                        <i class="fas fa-bullseye fa-4x text-success"></i>
+                    </div>
+                    <h1 class="display-3 fw-bold text-success mb-2">{{ prediction }}</h1>
+                    <h4 class="text-muted mb-3">MPa</h4>
+                    <div class="badge bg-success fs-6 mb-3">Compressive Strength</div>
+                    
+                    <!-- Confidence Level -->
+                    <div class="mt-4">
+                        <h6 class="text-muted">Prediction Confidence</h6>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-success" id="confidenceBar">
+                                <span class="fw-bold" id="confidenceText">0%</span>
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {% if confidence >= 85 %}
+                                <i class="fas fa-check-circle text-success"></i> High confidence - Input values within typical ranges
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle text-warning"></i> Moderate confidence - Some values outside typical ranges
+                            {% endif %}
+                        </small>
+                    </div>
+                    
+                    <!-- Strength Classification -->
+                    <div class="mt-4 p-3 rounded" style="background: rgba(40, 167, 69, 0.1);">
+                        <h6 class="text-success">Strength Classification</h6>
+                        {% if prediction >= 40 %}
+                            <span class="badge bg-success">High Strength</span>
+                            <div class="small text-muted mt-1">Suitable for structural applications</div>
+                        {% elif prediction >= 25 %}
+                            <span class="badge bg-warning">Medium Strength</span>
+                            <div class="small text-muted mt-1">Good for general construction</div>
+                        {% else %}
+                            <span class="badge bg-danger">Low Strength</span>
+                            <div class="small text-muted mt-1">Consider mix optimization</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Presets -->
+        <div class="card mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <div class="card-header">
+                <h6>
+                    <i class="fas fa-magic text-warning"></i>
+                    Quick Mix Presets
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary preset-btn" data-preset="standard">
+                        <i class="fas fa-home"></i> Standard Mix (M25)
+                    </button>
+                    <button class="btn btn-outline-success preset-btn" data-preset="high-strength">
+                        <i class="fas fa-building"></i> High Strength (M40)
+                    </button>
+                    <button class="btn btn-outline-warning preset-btn" data-preset="eco-friendly">
+                        <i class="fas fa-leaf"></i> Eco-Friendly Mix
+                    </button>
+                    <button class="btn btn-outline-info preset-btn" data-preset="rapid-setting">
+                        <i class="fas fa-bolt"></i> Rapid Setting
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reference Guide -->
+        <div class="card mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <div class="card-header">
+                <h6>
+                    <i class="fas fa-book text-info"></i>
+                    Reference Guide
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="referenceAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRanges">
+                                <i class="fas fa-ruler me-2"></i> Typical Ranges
+                            </button>
+                        </h2>
+                        <div id="collapseRanges" class="accordion-collapse collapse" data-bs-parent="#referenceAccordion">
+                            <div class="accordion-body">
+                                <ul class="list-unstyled">
+                                    <li><strong>Cement:</strong> 300-400 kg/m³</li>
+                                    <li><strong>Water:</strong> 150-200 kg/m³</li>
+                                    <li><strong>Coarse Agg:</strong> 1000-1200 kg/m³</li>
+                                    <li><strong>Fine Agg:</strong> 650-850 kg/m³</li>
+                                    <li><strong>W/C Ratio:</strong> 0.4-0.6</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStrength">
+                                <i class="fas fa-chart-bar me-2"></i> Strength Grades
+                            </button>
+                        </h2>
+                        <div id="collapseStrength" class="accordion-collapse collapse" data-bs-parent="#referenceAccordion">
+                            <div class="accordion-body">
+                                <ul class="list-unstyled">
+                                    <li><span class="badge bg-secondary">M15:</span> 15 MPa</li>
+                                    <li><span class="badge bg-primary">M20:</span> 20 MPa</li>
+                                    <li><span class="badge bg-success">M25:</span> 25 MPa</li>
+                                    <li><span class="badge bg-warning">M30:</span> 30 MPa</li>
+                                    <li><span class="badge bg-danger">M40:</span> 40 MPa</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Model Info -->
+        <div class="card mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+            <div class="card-header">
+                <h6>
+                    <i class="fas fa-info-circle text-primary"></i>
+                    AI Model Information
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="text-primary fw-bold">XGBoost</div>
+                        <small class="text-muted">Algorithm</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-success fw-bold">89%</div>
+                        <small class="text-muted">Accuracy</small>
+                    </div>
+                </div>
+                <hr>
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt"></i>
+                    This prediction is for estimation purposes. Always conduct physical testing for critical applications.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.input-group-container .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.prediction-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.prediction-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.prediction-result {
+    animation: fadeInScale 0.8s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.preset-btn {
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    transform: translateX(5px);
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+<!-- Hidden data elements for JavaScript -->
+{% if prediction %}
+<div id="predictionData" 
+     data-confidence="{{ confidence if confidence else 0 }}"
+     data-has-prediction="true"
+     style="display: none;"></div>
+{% else %}
+<div id="predictionData" 
+     data-confidence="0"
+     data-has-prediction="false"
+     style="display: none;"></div>
+{% endif %}
+
+{% block scripts %}
+<script>
+// Preset configurations
+const presets = {
+    'standard': {
+        cement: 350,
+        blast_furnace_slag: 0,
+        fly_ash: 0,
+        water: 175,
+        superplasticizer: 0,
+        coarse_aggregate: 1100,
+        fine_aggregate: 750,
+        age: 28
+    },
+    'high-strength': {
+        cement: 450,
+        blast_furnace_slag: 50,
+        fly_ash: 30,
+        water: 160,
+        superplasticizer: 8,
+        coarse_aggregate: 1000,
+        fine_aggregate: 700,
+        age: 28
+    },
+    'eco-friendly': {
+        cement: 280,
+        blast_furnace_slag: 80,
+        fly_ash: 60,
+        water: 168,
+        superplasticizer: 4,
+        coarse_aggregate: 1050,
+        fine_aggregate: 800,
+        age: 28
+    },
+    'rapid-setting': {
+        cement: 400,
+        blast_furnace_slag: 0,
+        fly_ash: 0,
+        water: 180,
+        superplasticizer: 12,
+        coarse_aggregate: 1000,
+        fine_aggregate: 720,
+        age: 7
+    }
+};
+
+// Apply preset values
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const presetName = btn.dataset.preset;
+        const preset = presets[presetName];
+        
+        Object.keys(preset).forEach(key => {
+            const input = document.getElementById(key);
+            if (input) {
+                input.value = preset[key];
+                input.style.background = 'linear-gradient(90deg, #e3f2fd, #ffffff)';
+                setTimeout(() => {
+                    input.style.background = '';
+                }, 1000);
+            }
+        });
+        
+        // Update calculated ratios
+        updateCalculatedRatios();
+        
+        // Show success message
+        btn.innerHTML = '<i class="fas fa-check"></i> Applied!';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-primary', 'btn-outline-success', 'btn-outline-warning', 'btn-outline-info');
+        
+        setTimeout(() => {
+            btn.innerHTML = btn.dataset.preset === 'standard' ? '<i class="fas fa-home"></i> Standard Mix (M25)' :
+                            btn.dataset.preset === 'high-strength' ? '<i class="fas fa-building"></i> High Strength (M40)' :
+                            btn.dataset.preset === 'eco-friendly' ? '<i class="fas fa-leaf"></i> Eco-Friendly Mix' :
+                            '<i class="fas fa-bolt"></i> Rapid Setting';
+            btn.classList.remove('btn-success');
+            btn.classList.add(btn.dataset.preset === 'standard' ? 'btn-outline-primary' :
+                             btn.dataset.preset === 'high-strength' ? 'btn-outline-success' :
+                             btn.dataset.preset === 'eco-friendly' ? 'btn-outline-warning' :
+                             'btn-outline-info');
+        }, 2000);
+    });
+});
+
+// Update calculated ratios in real-time
+function updateCalculatedRatios() {
+    const cement = parseFloat(document.getElementById('cement').value) || 0;
+    const water = parseFloat(document.getElementById('water').value) || 1;
+    const blastFurnaceSlag = parseFloat(document.getElementById('blast_furnace_slag').value) || 0;
+    const flyAsh = parseFloat(document.getElementById('fly_ash').value) || 0;
+    const age = parseInt(document.getElementById('age').value) || 28;
+    
+    // Cement/Water Ratio
+    const cementWaterRatio = water > 0 ? (cement / water).toFixed(2) : '0.00';
+    document.getElementById('cementWaterRatio').textContent = cementWaterRatio;
+    
+    // Total Binder
+    const totalBinder = cement + blastFurnaceSlag + flyAsh;
+    document.getElementById('totalBinder').textContent = totalBinder.toFixed(0);
+    
+    // Age Factor (normalized to 28 days)
+    const ageFactor = Math.min(age / 28, 2.0).toFixed(2);
+    document.getElementById('ageFactor').textContent = ageFactor;
+}
+
+// Add event listeners to all inputs for real-time calculation
+['cement', 'blast_furnace_slag', 'fly_ash', 'water', 'age'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+        input.addEventListener('input', updateCalculatedRatios);
+    }
+});
+
+// Form submission with loading animation
+document.getElementById('predictionForm').addEventListener('submit', function(e) {
+    const btn = document.querySelector('.prediction-btn');
+    const btnText = btn.querySelector('.btn-text');
+    const loadingSpinner = btn.querySelector('.loading-spinner');
+    
+    btnText.style.display = 'none';
+    loadingSpinner.style.display = 'inline-block';
+    btn.disabled = true;
+});
+
+// Input validation and styling
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('input', function() {
+        const min = parseFloat(this.min);
+        const max = parseFloat(this.max);
+        const value = parseFloat(this.value);
+        
+        // Remove existing classes
+        this.classList.remove('border-success', 'border-warning', 'border-danger');
+        
+        if (value >= min && value <= max) {
+            this.classList.add('border-success');
+        } else if (value > max * 0.8 && value < max * 1.2) {
+            this.classList.add('border-warning');
+        } else {
+            this.classList.add('border-danger');
+        }
+    });
+    
+    // Trigger validation on page load
+    input.dispatchEvent(new Event('input'));
+});
+
+// Initialize form and calculations
+updateCalculatedRatios();
+
+// Initialize confidence bar if prediction exists
+const predictionData = document.getElementById('predictionData');
+if (predictionData) {
+    const confidence = parseInt(predictionData.dataset.confidence);
+    const confidenceBar = document.getElementById('confidenceBar');
+    const confidenceText = document.getElementById('confidenceText');
+    
+    if (confidenceBar && confidenceText && confidence > 0) {
+        confidenceBar.style.width = confidence + '%';
+        confidenceText.textContent = confidence + '%';
+    }
+    
+    // Add smooth scroll to prediction result if prediction exists
+    if (predictionData.dataset.hasPrediction === 'true') {
+        setTimeout(() => {
+            const resultCard = document.querySelector('.card.border-success');
+            if (resultCard) {
+                resultCard.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }, 500);
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,185 @@
+FINAL MODEL EVALUATION REPORT
+================================================================================
+
+Generated on: 2025-08-04 20:34:26
+Model: XGBoost
+Source: final_training
+Model File: D:\PROJECTS\Concrete-compressive-strength\results\final_model_training\final_1\xgboost_final_model.joblib
+
+EXECUTIVE SUMMARY
+----------------------------------------
+Model Performance (Test Set):
+  R² Score: 0.941485
+  RMSE: 4.1348 MPa
+  MAE: 2.6430 MPa
+  Max Error: 22.1931 MPa
+
+Cross-Validation Performance:
+  Mean R² Score: 0.918909 (±0.012519)
+  Range: 0.898012 to 0.931911
+
+Model Generalization:
+  Training R²: 0.992938
+  Test R²: 0.941485
+  Difference: 0.051453
+
+DETAILED PERFORMANCE METRICS
+----------------------------------------
+Training Set Performance:
+  R² Score: 0.992938
+  MSE: 1.803422
+  RMSE: 1.3429 MPa
+  MAE: 0.7138 MPa
+  Explained Variance: 0.992938
+  MAPE: 0.0255%
+
+Test Set Performance:
+  R² Score: 0.941485
+  MSE: 17.096721
+  RMSE: 4.1348 MPa
+  MAE: 2.6430 MPa
+  Explained Variance: 0.941811
+  Max Error: 22.1931 MPa
+  Median AE: 1.5426 MPa
+  MAPE: 0.0935%
+
+Cross-Validation Results (5-Fold):
+  Mean R² Score: 0.918909
+  Standard Deviation: 0.012519
+  Minimum Score: 0.898012
+  Maximum Score: 0.931911
+  Individual Scores: ['0.911316', '0.931911', '0.927020', '0.926287', '0.898012']
+
+PREDICTION ACCURACY ANALYSIS
+----------------------------------------
+Residual Statistics (Test Set):
+  Mean Residual: 0.3086 MPa
+  Std Residual: 4.1233 MPa
+  Min Residual: -10.5959 MPa
+  Max Residual: 22.1931 MPa
+
+Prediction Range Analysis:
+  Actual Values Range: 2.33 to 76.89 MPa
+  Predicted Values Range: 4.32 to 77.08 MPa
+
+Accuracy Within Tolerance Levels:
+  Within ±5 MPa: 175/201 (87.1%)
+  Within ±10 MPa: 194/201 (96.5%)
+  Within ±15 MPa: 198/201 (98.5%)
+  Within ±20 MPa: 200/201 (99.5%)
+
+FEATURE IMPORTANCE ANALYSIS
+----------------------------------------
+Top 10 Most Important Features:
+   1. log_age                       : 0.263618
+   2. water_powder_ratio            : 0.216809
+   3. cement_quality_index          : 0.138339
+   4. age                           : 0.105441
+   5. total_powder                  : 0.086208
+   6. water_cement_ratio            : 0.038465
+   7. total_cement                  : 0.037309
+   8. cement                        : 0.031815
+   9. water                         : 0.020325
+  10. superplasticizer              : 0.013811
+
+All Features Importance (sorted by importance):
+   1. log_age                       : 0.263618
+   2. water_powder_ratio            : 0.216809
+   3. cement_quality_index          : 0.138339
+   4. age                           : 0.105441
+   5. total_powder                  : 0.086208
+   6. water_cement_ratio            : 0.038465
+   7. total_cement                  : 0.037309
+   8. cement                        : 0.031815
+   9. water                         : 0.020325
+  10. superplasticizer              : 0.013811
+  11. cement_material_ratio         : 0.011918
+  12. total_material                : 0.008518
+  13. age_category_longterm         : 0.007736
+  14. scm_cement_ratio              : 0.007421
+  15. coarse_aggregate              : 0.007263
+  16. age_category_extended         : 0.002127
+  17. age_category_early            : 0.001880
+  18. sqrt_age                      : 0.000996
+
+MODEL INFORMATION
+----------------------------------------
+Model Type: XGBRegressor
+Model Name: XGBoost
+Number of Features: 18
+Training Samples: 804
+Test Samples: 201
+
+Model Parameters:
+  objective: reg:squarederror
+  base_score: None
+  booster: None
+  callbacks: None
+  colsample_bylevel: None
+  colsample_bynode: None
+  colsample_bytree: 0.8
+  device: None
+  early_stopping_rounds: None
+  enable_categorical: False
+  eval_metric: None
+  feature_types: None
+  feature_weights: None
+  gamma: 0
+  grow_policy: None
+  importance_type: None
+  interaction_constraints: None
+  learning_rate: 0.1
+  max_bin: None
+  max_cat_threshold: None
+  max_cat_to_onehot: None
+  max_delta_step: None
+  max_depth: 6
+  max_leaves: None
+  min_child_weight: 3
+  missing: nan
+  monotone_constraints: None
+  multi_strategy: None
+  n_estimators: 200
+  n_jobs: None
+  num_parallel_tree: None
+  random_state: 42
+  reg_alpha: 0
+  reg_lambda: 1
+  sampling_method: None
+  scale_pos_weight: None
+  subsample: 0.8
+  tree_method: None
+  validate_parameters: None
+  verbosity: None
+
+DATA QUALITY ASSESSMENT
+----------------------------------------
+Training Data:
+  Shape: (804, 18)
+  Target Mean: 35.05 MPa
+  Target Std: 15.98 MPa
+  Target Range: 3.32 to 76.89 MPa
+
+Test Data:
+  Shape: (201, 18)
+  Target Mean: 35.91 MPa
+  Target Std: 17.09 MPa
+  Target Range: 2.33 to 76.89 MPa
+
+PERFORMANCE INTERPRETATION
+----------------------------------------
+Overall Model Performance: Excellent
+R² Score of 0.941 indicates that the model explains 94.1% of the variance in concrete strength.
+
+Error Analysis:
+  RMSE of 4.13 MPa represents 11.5% of mean target value
+  MAE of 2.64 MPa represents 7.4% of mean target value
+
+RECOMMENDations
+----------------------------------------
+✓ Model shows excellent predictive performance
+✓ Suitable for production use with confidence
+✓ Model shows consistent performance across different data splits
+
+Report generated on: 2025-08-04 20:34:26
+================================================================================
