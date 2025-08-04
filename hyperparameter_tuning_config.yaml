@@ -1,0 +1,77 @@
+hyperparameter_tuning:
+  # Number of iterations for each model
+  n_iterations: 10
+  
+  # Cross-validation settings
+  cv_folds: 3
+  
+  # Scoring metric for optimization
+  scoring: 'r2'
+  
+  # Random state for reproducibility
+  random_state: 42
+  
+  # Number of parallel jobs (-1 for all cores)
+  n_jobs: -1
+  
+  # Verbose output level
+  verbose: 1
+  
+  # Model-specific settings
+  models:
+    random_forest:
+      enabled: true
+      iterations: 10
+    
+    xgboost:
+      enabled: true
+      iterations: 10
+    
+    extra_trees:
+      enabled: true
+      iterations: 10
+  
+  # Results settings
+  top_n_results: 5
+  
+  # Parameter distributions (advanced users can modify these)
+  parameter_ranges:
+    random_forest:
+      n_estimators_min: 50
+      n_estimators_max: 500
+      max_depth_min: 5
+      max_depth_max: 30
+      min_samples_split_min: 2
+      min_samples_split_max: 20
+      min_samples_leaf_min: 1
+      min_samples_leaf_max: 10
+    
+    xgboost:
+      n_estimators_min: 50
+      n_estimators_max: 500
+      learning_rate_min: 0.01
+      learning_rate_max: 0.31
+      max_depth_min: 3
+      max_depth_max: 15
+      min_child_weight_min: 1
+      min_child_weight_max: 10
+      subsample_min: 0.6
+      subsample_max: 1.0
+      colsample_bytree_min: 0.6
+      colsample_bytree_max: 1.0
+      gamma_min: 0
+      gamma_max: 0.5
+      reg_alpha_min: 0
+      reg_alpha_max: 1
+      reg_lambda_min: 0
+      reg_lambda_max: 1
+    
+    extra_trees:
+      n_estimators_min: 50
+      n_estimators_max: 500
+      max_depth_min: 5
+      max_depth_max: 30
+      min_samples_split_min: 2
+      min_samples_split_max: 20
+      min_samples_leaf_min: 1
+      min_samples_leaf_max: 10

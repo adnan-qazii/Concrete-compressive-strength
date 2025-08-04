@@ -1,0 +1,42 @@
+CONCRETE STRENGTH PREDICTION - DETAILED MODEL METRICS
+================================================================================
+
+MODEL: XGBoost
+--------------------------------------------------
+R² Score (Training):     0.988624
+R² Score (Test):         0.936613
+MSE (Training):          2.904944
+MSE (Test):              18.520340
+MAE (Training):          1.079317
+MAE (Test):              2.925755
+RMSE (Training):         1.704390
+RMSE (Test):             4.303526
+Explained Variance (Training): 0.988624
+Explained Variance (Test):     0.937170
+
+MODEL: Extra Trees
+--------------------------------------------------
+R² Score (Training):     0.982323
+R² Score (Test):         0.911876
+MSE (Training):          4.513775
+MSE (Test):              25.747830
+MAE (Training):          1.378657
+MAE (Test):              3.493742
+RMSE (Training):         2.124565
+RMSE (Test):             5.074232
+Explained Variance (Training): 0.982323
+Explained Variance (Test):     0.912404
+
+MODEL: Random Forest
+--------------------------------------------------
+R² Score (Training):     0.973560
+R² Score (Test):         0.907515
+MSE (Training):          6.751535
+MSE (Test):              27.022079
+MAE (Training):          1.745948
+MAE (Test):              3.681366
+RMSE (Training):         2.598372
+RMSE (Test):             5.198277
+Explained Variance (Training): 0.973560
+Explained Variance (Test):     0.908357
+
