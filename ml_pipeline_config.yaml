@@ -1,0 +1,155 @@
+ml_pipeline:
+  # Pipeline execution settings
+  execution:
+    # Which steps to run (set to false to skip)
+    steps:
+      data_ingestion: true
+      feature_selection: true
+      data_processing: true
+      model_training: true
+      hyperparameter_tuning: true  # Set to true for extensive tuning (takes longer)
+      final_model_training: true
+      final_model_evaluation: true
+    
+    # Execution mode
+    mode: 'sequential'  # Options: 'sequential', 'parallel' (for independent steps)
+    
+    # Error handling
+    stop_on_error: true
+    continue_on_warnings: true
+    
+    # Logging
+    log_level: 'INFO'  # Options: 'DEBUG', 'INFO', 'WARNING', 'ERROR'
+    save_logs: true
+    
+  # Step-specific configurations
+  step_configs:
+    data_ingestion:
+      enabled: true
+      config_file: 'data_processing_config.yaml'
+      output_validation: true
+      
+    feature_selection:
+      enabled: true
+      depends_on: ['data_ingestion']
+      validate_input: true
+      
+    data_processing:
+      enabled: true
+      depends_on: ['feature_selection']
+      config_file: 'data_processing_config.yaml'
+      
+    model_training:
+      enabled: true
+      depends_on: ['data_processing']
+      quick_mode: false  # Set to true for faster training with fewer estimators
+      
+    hyperparameter_tuning:
+      enabled: false  # Disabled by default due to long execution time
+      depends_on: ['data_processing']
+      config_file: 'hyperparameter_tuning_config.yaml'
+      iterations: 100  # Override config file if needed
+      
+    final_model_training:
+      enabled: true
+      depends_on: ['model_training']  # Can also depend on 'hyperparameter_tuning' if enabled
+      config_file: 'final_model_training_config.yaml'
+      auto_select_best: true
+      
+    final_model_evaluation:
+      enabled: true
+      depends_on: ['final_model_training']
+      comprehensive_report: true
+
+  # Pipeline settings
+  pipeline_settings:
+    # Working directory
+    work_dir: '.'
+    
+    # Python environment
+    python_executable: 'vir-env/Scripts/python.exe'  # Windows path
+    
+    # Resource management
+    max_memory_usage: '8GB'
+    max_parallel_jobs: -1  # -1 for all cores
+    
+    # Results management
+    cleanup_intermediate: false  # Set to true to save disk space
+    backup_results: true
+    timestamp_results: true
+    
+    # Validation settings
+    validate_data_integrity: true
+    check_dependencies: true
+    
+  # Notification settings (optional)
+  notifications:
+    enabled: false
+    email:
+      smtp_server: ''
+      smtp_port: 587
+      username: ''
+      password: ''
+      recipient: ''
+    
+    # Console notifications
+    console_progress: true
+    estimated_time: true
+    
+  # Advanced settings
+  advanced:
+    # Performance monitoring
+    monitor_performance: true
+    profile_memory: false
+    profile_cpu: false
+    
+    # Debugging
+    debug_mode: false
+    save_intermediate_results: true
+    verbose_logging: false
+    
+    # Recovery
+    checkpoint_enabled: true
+    resume_from_checkpoint: false
+    checkpoint_frequency: 'per_step'  # Options: 'per_step', 'time_based'
+    
+  # Environment settings
+  environment:
+    # Required packages validation
+    check_packages: true
+    required_packages:
+      - 'pandas'
+      - 'numpy'
+      - 'scikit-learn'
+      - 'xgboost'
+      - 'pyyaml'
+      - 'joblib'
+    
+    # GPU settings (if available)
+    use_gpu: false
+    gpu_memory_limit: '4GB'
+    
+    # Reproducibility
+    random_seed: 42
+    deterministic: true
+
+  # Output configuration
+  output:
+    # Directory structure
+    create_timestamped_dir: true
+    base_results_dir: 'results'
+    
+    # Report formats
+    generate_reports:
+      - 'txt'
+      - 'csv'
+      - 'json'
+    
+    # Summary report
+    create_pipeline_summary: true
+    include_performance_metrics: true
+    include_timing_info: true
+    
+    # Visualization (if matplotlib available)
+    create_plots: false  # Set to true if you have matplotlib installed
+    plot_formats: ['png', 'pdf']
