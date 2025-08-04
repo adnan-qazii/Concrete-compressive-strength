@@ -1,0 +1,769 @@
+{% extends "base.html" %}
+
+{% block title %}Training Center - ConcreteML AI Platform{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header animate__animated animate__fadeInDown">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-graduation-cap"></i> Advanced Training Center
+            </h1>
+            <p class="text-muted mb-0">Configure and train ML models with precision control</p>
+        </div>
+        <div>
+            <a href="/ml_operations" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Back to ML Operations
+            </a>
+            <button class="btn btn-success" onclick="startSelectedTraining()">
+                <i class="fas fa-play"></i> Start Training
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Training Configuration -->
+<div class="row">
+    <!-- Model Selection -->
+    <div class="col-lg-4 mb-4">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-brain text-primary"></i>
+                    Model Selection
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="random_forest" id="randomForest" checked>
+                    <label class="form-check-label" for="randomForest">
+                        <i class="fas fa-tree text-success me-2"></i>
+                        <strong>Random Forest</strong>
+                        <br><small class="text-muted">Ensemble of decision trees</small>
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="xgboost" id="xgboost" checked>
+                    <label class="form-check-label" for="xgboost">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        <strong>XGBoost</strong>
+                        <br><small class="text-muted">Gradient boosting framework</small>
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="extra_trees" id="extraTrees" checked>
+                    <label class="form-check-label" for="extraTrees">
+                        <i class="fas fa-leaf text-info me-2"></i>
+                        <strong>Extra Trees</strong>
+                        <br><small class="text-muted">Extremely randomized trees</small>
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="linear_regression" id="linearRegression">
+                    <label class="form-check-label" for="linearRegression">
+                        <i class="fas fa-chart-line text-secondary me-2"></i>
+                        <strong>Linear Regression</strong>
+                        <br><small class="text-muted">Simple linear model</small>
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="svr" id="svr">
+                    <label class="form-check-label" for="svr">
+                        <i class="fas fa-vector-square text-danger me-2"></i>
+                        <strong>Support Vector Regression</strong>
+                        <br><small class="text-muted">SVM for regression</small>
+                    </label>
+                </div>
+                
+                <hr>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="selectAllModels()">
+                        <i class="fas fa-check-double"></i> Select All
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="clearAllModels()">
+                        <i class="fas fa-times"></i> Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Training Parameters -->
+    <div class="col-lg-4 mb-4">
+        <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-sliders-h text-success"></i>
+                    Training Parameters
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="testSize" class="form-label">
+                        <i class="fas fa-percentage me-2"></i>Test Size
+                    </label>
+                    <div class="input-group">
+                        <input type="range" class="form-range" id="testSize" min="0.1" max="0.4" step="0.05" value="0.2" oninput="updateTestSize(this.value)">
+                        <span class="input-group-text" id="testSizeValue">20%</span>
+                    </div>
+                    <small class="text-muted">Percentage of data for testing</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="randomState" class="form-label">
+                        <i class="fas fa-dice me-2"></i>Random State
+                    </label>
+                    <input type="number" class="form-control" id="randomState" value="42" min="1" max="999">
+                    <small class="text-muted">Seed for reproducible results</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="cvFolds" class="form-label">
+                        <i class="fas fa-layer-group me-2"></i>Cross-Validation Folds
+                    </label>
+                    <select class="form-select" id="cvFolds">
+                        <option value="3">3-Fold CV</option>
+                        <option value="5" selected>5-Fold CV</option>
+                        <option value="10">10-Fold CV</option>
+                    </select>
+                    <small class="text-muted">Number of folds for cross-validation</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="nJobs" class="form-label">
+                        <i class="fas fa-microchip me-2"></i>Parallel Jobs
+                    </label>
+                    <select class="form-select" id="nJobs">
+                        <option value="1">1 Core</option>
+                        <option value="2">2 Cores</option>
+                        <option value="4">4 Cores</option>
+                        <option value="-1" selected>All Available Cores</option>
+                    </select>
+                    <small class="text-muted">Number of CPU cores to use</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="scoringMetric" class="form-label">
+                        <i class="fas fa-chart-bar me-2"></i>Scoring Metric
+                    </label>
+                    <select class="form-select" id="scoringMetric">
+                        <option value="r2" selected>R² Score</option>
+                        <option value="neg_mean_squared_error">Negative MSE</option>
+                        <option value="neg_mean_absolute_error">Negative MAE</option>
+                        <option value="neg_root_mean_squared_error">Negative RMSE</option>
+                    </select>
+                    <small class="text-muted">Primary evaluation metric</small>
+                </div>
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="saveModels" checked>
+                    <label class="form-check-label" for="saveModels">
+                        <i class="fas fa-save me-2"></i>Save trained models
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Advanced Options -->
+    <div class="col-lg-4 mb-4">
+        <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cogs text-warning"></i>
+                    Advanced Options
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="fas fa-filter me-2"></i>Feature Selection
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="featureSelection">
+                        <label class="form-check-label" for="featureSelection">
+                            Enable automatic feature selection
+                        </label>
+                    </div>
+                    <small class="text-muted">Remove low-importance features</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="fas fa-balance-scale me-2"></i>Data Scaling
+                    </label>
+                    <select class="form-select" id="scalingMethod">
+                        <option value="standard" selected>Standard Scaling</option>
+                        <option value="minmax">Min-Max Scaling</option>
+                        <option value="robust">Robust Scaling</option>
+                        <option value="none">No Scaling</option>
+                    </select>
+                    <small class="text-muted">Method for feature scaling</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="validationStrategy" class="form-label">
+                        <i class="fas fa-check-double me-2"></i>Validation Strategy
+                    </label>
+                    <select class="form-select" id="validationStrategy">
+                        <option value="train_test_split" selected>Train-Test Split</option>
+                        <option value="cross_validation">Cross-Validation Only</option>
+                        <option value="holdout">Holdout Validation</option>
+                    </select>
+                    <small class="text-muted">Data validation approach</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="fas fa-chart-line me-2"></i>Output Options
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="generatePlots" checked>
+                        <label class="form-check-label" for="generatePlots">
+                            Generate performance plots
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="detailedReport" checked>
+                        <label class="form-check-label" for="detailedReport">
+                            Create detailed training report
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="exportResults" checked>
+                        <label class="form-check-label" for="exportResults">
+                            Export results to CSV
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="outputFormat" class="form-label">
+                        <i class="fas fa-file-alt me-2"></i>Report Format
+                    </label>
+                    <select class="form-select" id="outputFormat">
+                        <option value="txt" selected>Text Report</option>
+                        <option value="html">HTML Report</option>
+                        <option value="pdf">PDF Report</option>
+                        <option value="json">JSON Data</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Training Progress -->
+<div class="row">
+    <div class="col-12">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line text-primary"></i>
+                    Training Progress & Results
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="trainingStatus" class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Configure your training parameters above and click "Start Training" to begin.
+                </div>
+                
+                <div id="trainingProgress" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span><i class="fas fa-brain me-2"></i>Training Models</span>
+                        <span id="trainingTime">00:00:00</span>
+                    </div>
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                             role="progressbar" id="trainingProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="row" id="modelProgress">
+                        <!-- Model progress cards will be inserted here -->
+                    </div>
+                </div>
+                
+                <div id="trainingLogs" class="terminal-logs mt-3" style="display: none;">
+                    <div class="terminal-header">
+                        <span class="terminal-title">Training Logs</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light me-2" onclick="downloadLogs()">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-sm btn-outline-light" onclick="clearTrainingLogs()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="terminal-content" id="trainingLogsContent"></div>
+                </div>
+                
+                <div id="trainingResults" style="display: none;">
+                    <h6 class="mt-4"><i class="fas fa-trophy me-2 text-warning"></i>Training Results</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>R² Score</th>
+                                    <th>RMSE</th>
+                                    <th>MAE</th>
+                                    <th>Training Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- Results will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Presets -->
+<div class="row">
+    <div class="col-12">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-magic text-purple"></i>
+                    Quick Training Presets
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="preset-card" onclick="applyPreset('fast')">
+                            <div class="preset-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="preset-title">Fast Training</div>
+                            <div class="preset-desc">Quick training with default parameters</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="preset-card" onclick="applyPreset('accurate')">
+                            <div class="preset-icon">
+                                <i class="fas fa-crosshairs"></i>
+                            </div>
+                            <div class="preset-title">High Accuracy</div>
+                            <div class="preset-desc">Optimized for best performance</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="preset-card" onclick="applyPreset('experimental')">
+                            <div class="preset-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <div class="preset-title">Experimental</div>
+                            <div class="preset-desc">Test all available models</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="preset-card" onclick="applyPreset('production')">
+                            <div class="preset-icon">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <div class="preset-title">Production Ready</div>
+                            <div class="preset-desc">Robust training for deployment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.preset-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.preset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+.preset-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.2rem;
+}
+
+.preset-title {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.preset-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.terminal-logs {
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.terminal-header {
+    background: #333;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.terminal-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.terminal-content {
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.model-progress-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.model-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.model-progress-bar {
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.model-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let trainingTimer;
+let trainingStartTime;
+
+function updateTestSize(value) {
+    document.getElementById('testSizeValue').textContent = (value * 100).toFixed(0) + '%';
+}
+
+function selectAllModels() {
+    document.querySelectorAll('input[type="checkbox"][value]').forEach(cb => {
+        if (cb.value.includes('_')) cb.checked = true;
+    });
+}
+
+function clearAllModels() {
+    document.querySelectorAll('input[type="checkbox"][value]').forEach(cb => {
+        if (cb.value.includes('_')) cb.checked = false;
+    });
+}
+
+function getSelectedModels() {
+    const models = [];
+    document.querySelectorAll('input[type="checkbox"][value]:checked').forEach(cb => {
+        if (cb.value.includes('_')) models.push(cb.value);
+    });
+    return models;
+}
+
+function getTrainingConfig() {
+    return {
+        models: getSelectedModels(),
+        test_size: parseFloat(document.getElementById('testSize').value),
+        random_state: parseInt(document.getElementById('randomState').value),
+        cv_folds: parseInt(document.getElementById('cvFolds').value),
+        n_jobs: parseInt(document.getElementById('nJobs').value),
+        scoring: document.getElementById('scoringMetric').value,
+        save_models: document.getElementById('saveModels').checked,
+        feature_selection: document.getElementById('featureSelection').checked,
+        scaling_method: document.getElementById('scalingMethod').value,
+        validation_strategy: document.getElementById('validationStrategy').value,
+        generate_plots: document.getElementById('generatePlots').checked,
+        detailed_report: document.getElementById('detailedReport').checked,
+        export_results: document.getElementById('exportResults').checked,
+        output_format: document.getElementById('outputFormat').value
+    };
+}
+
+function startSelectedTraining() {
+    const config = getTrainingConfig();
+    
+    if (config.models.length === 0) {
+        showAlert('Please select at least one model to train.', 'warning');
+        return;
+    }
+    
+    if (confirm(`Start training ${config.models.length} model(s) with the selected configuration?`)) {
+        // Show training progress
+        document.getElementById('trainingStatus').style.display = 'none';
+        document.getElementById('trainingProgress').style.display = 'block';
+        document.getElementById('trainingLogs').style.display = 'block';
+        
+        // Initialize model progress cards
+        initializeModelProgress(config.models);
+        
+        // Start timer
+        trainingStartTime = Date.now();
+        trainingTimer = setInterval(updateTrainingTimer, 1000);
+        
+        // Start training
+        fetch('/api/train_models', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(config)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                appendTrainingLog('🚀 Training started successfully!');
+                appendTrainingLog(`📊 Models: ${config.models.join(', ')}`);
+                appendTrainingLog(`⚙️ Configuration: ${JSON.stringify(config, null, 2)}`);
+                
+                // Poll for updates
+                pollTrainingProgress();
+            } else {
+                showAlert(`Failed to start training: ${data.message}`, 'error');
+                resetTrainingUI();
+            }
+        })
+        .catch(error => {
+            showAlert(`Error: ${error.message}`, 'error');
+            resetTrainingUI();
+        });
+    }
+}
+
+function initializeModelProgress(models) {
+    const progressContainer = document.getElementById('modelProgress');
+    progressContainer.innerHTML = '';
+    
+    models.forEach(model => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6 mb-3';
+        card.innerHTML = `
+            <div class="model-progress-card" id="progress-${model}">
+                <div class="model-progress-header">
+                    <span><i class="fas fa-brain me-2"></i>${model.replace('_', ' ').toUpperCase()}</span>
+                    <span class="badge bg-secondary">Waiting</span>
+                </div>
+                <div class="model-progress-bar">
+                    <div class="model-progress-fill"></div>
+                </div>
+            </div>
+        `;
+        progressContainer.appendChild(card);
+    });
+}
+
+function updateTrainingTimer() {
+    const elapsed = Date.now() - trainingStartTime;
+    const hours = Math.floor(elapsed / 3600000);
+    const minutes = Math.floor((elapsed % 3600000) / 60000);
+    const seconds = Math.floor((elapsed % 60000) / 1000);
+    
+    document.getElementById('trainingTime').textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function appendTrainingLog(message) {
+    const logsContent = document.getElementById('trainingLogsContent');
+    const timestamp = new Date().toLocaleTimeString();
+    logsContent.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+    logsContent.scrollTop = logsContent.scrollHeight;
+}
+
+function pollTrainingProgress() {
+    const pollInterval = setInterval(() => {
+        fetch('/api/pipeline_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const status = data.status;
+                    
+                    // Update logs
+                    if (status.logs && status.logs.length > 0) {
+                        status.logs.forEach(log => appendTrainingLog(log));
+                    }
+                    
+                    // Check if completed
+                    if (!status.running) {
+                        clearInterval(pollInterval);
+                        clearInterval(trainingTimer);
+                        
+                        if (status.completed) {
+                            appendTrainingLog('✅ Training completed successfully!');
+                            showTrainingResults();
+                        } else if (status.error) {
+                            appendTrainingLog(`❌ Training failed: ${status.error}`);
+                            showAlert(`Training failed: ${status.error}`, 'error');
+                        }
+                        
+                        resetTrainingUI();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error polling training progress:', error);
+            });
+    }, 2000);
+}
+
+function showTrainingResults() {
+    // This would fetch and display actual training results
+    document.getElementById('trainingResults').style.display = 'block';
+    
+    // Mock results for demonstration
+    const mockResults = [
+        { model: 'Random Forest', r2: 0.8756, rmse: 7.23, mae: 5.12, time: '45s', status: '✅ Success' },
+        { model: 'XGBoost', r2: 0.8912, rmse: 6.78, mae: 4.91, time: '67s', status: '✅ Success' },
+        { model: 'Extra Trees', r2: 0.8689, rmse: 7.45, mae: 5.34, time: '38s', status: '✅ Success' }
+    ];
+    
+    const tableBody = document.getElementById('resultsTableBody');
+    tableBody.innerHTML = '';
+    
+    mockResults.forEach(result => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${result.model}</strong></td>
+            <td><span class="badge bg-primary">${result.r2.toFixed(4)}</span></td>
+            <td>${result.rmse.toFixed(2)}</td>
+            <td>${result.mae.toFixed(2)}</td>
+            <td>${result.time}</td>
+            <td>${result.status}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function resetTrainingUI() {
+    document.getElementById('trainingStatus').style.display = 'block';
+    document.getElementById('trainingProgress').style.display = 'none';
+}
+
+function clearTrainingLogs() {
+    document.getElementById('trainingLogsContent').innerHTML = '';
+}
+
+function downloadLogs() {
+    const logs = document.getElementById('trainingLogsContent').textContent;
+    const blob = new Blob([logs], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `training_logs_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function applyPreset(presetName) {
+    switch (presetName) {
+        case 'fast':
+            // Fast training preset
+            clearAllModels();
+            document.getElementById('randomForest').checked = true;
+            document.getElementById('testSize').value = 0.2;
+            updateTestSize(0.2);
+            document.getElementById('cvFolds').value = 3;
+            document.getElementById('nJobs').value = -1;
+            break;
+            
+        case 'accurate':
+            // High accuracy preset
+            selectAllModels();
+            document.getElementById('testSize').value = 0.15;
+            updateTestSize(0.15);
+            document.getElementById('cvFolds').value = 10;
+            document.getElementById('featureSelection').checked = true;
+            break;
+            
+        case 'experimental':
+            // Experimental preset
+            selectAllModels();
+            document.getElementById('testSize').value = 0.25;
+            updateTestSize(0.25);
+            document.getElementById('cvFolds').value = 5;
+            document.getElementById('scalingMethod').value = 'robust';
+            break;
+            
+        case 'production':
+            // Production ready preset
+            document.getElementById('randomForest').checked = true;
+            document.getElementById('xgboost').checked = true;
+            document.getElementById('testSize').value = 0.2;
+            updateTestSize(0.2);
+            document.getElementById('cvFolds').value = 5;
+            document.getElementById('detailedReport').checked = true;
+            break;
+    }
+    
+    showAlert(`Applied ${presetName} preset configuration.`, 'success');
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('.page-header').after(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

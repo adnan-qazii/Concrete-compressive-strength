@@ -1,0 +1,779 @@
+{% extends "base.html" %}
+
+{% block title %}ML Operations - ConcreteML AI Platform{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header animate__animated animate__fadeInDown">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-robot"></i> ML Operations Center
+            </h1>
+            <p class="text-muted mb-0">Complete control over your machine learning pipeline</p>
+        </div>
+        <div>
+            <button class="btn btn-info me-2" onclick="refreshSystemInfo()">
+                <i class="fas fa-sync-alt"></i> Refresh Status
+            </button>
+            <button class="btn btn-warning" onclick="stopPipeline()" id="stopBtn" style="display: none;">
+                <i class="fas fa-stop"></i> Stop Pipeline
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- System Status Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card animate__animated animate__fadeInUp">
+            <div class="stat-icon">
+                <i class="fas fa-microchip text-primary"></i>
+            </div>
+            <div class="stat-number" id="cpuCount">-</div>
+            <div class="stat-label">CPU Cores</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="stat-icon">
+                <i class="fas fa-memory text-success"></i>
+            </div>
+            <div class="stat-number" id="memoryAvailable">-</div>
+            <div class="stat-label">Available RAM</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <div class="stat-icon">
+                <i class="fas fa-hdd text-warning"></i>
+            </div>
+            <div class="stat-number" id="diskUsage">-</div>
+            <div class="stat-label">Disk Usage</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <div class="stat-icon" id="pipelineStatusIcon">
+                <i class="fas fa-circle text-secondary"></i>
+            </div>
+            <div class="stat-number" id="pipelineStatus">Idle</div>
+            <div class="stat-label">Pipeline Status</div>
+        </div>
+    </div>
+</div>
+
+<!-- ML Operations Grid -->
+<div class="row">
+    <!-- Data Operations -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div>
+                    <h5>Data Operations</h5>
+                    <p class="text-muted mb-0">Manage data ingestion, processing, and feature engineering</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="runStep('data_ingestion')">
+                    <i class="fas fa-download me-2"></i>Data Ingestion
+                </button>
+                <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="runStep('feature_selection')">
+                    <i class="fas fa-filter me-2"></i>Feature Selection
+                </button>
+                <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="runStep('data_processing')">
+                    <i class="fas fa-cogs me-2"></i>Data Processing
+                </button>
+                <a href="/data_operations" class="btn btn-primary btn-sm w-100">
+                    <i class="fas fa-tools me-2"></i>Advanced Data Operations
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Training -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div>
+                    <h5>Model Training</h5>
+                    <p class="text-muted mb-0">Train multiple ML models with custom configurations</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="runStep('model_training')">
+                    <i class="fas fa-play me-2"></i>Basic Training
+                </button>
+                <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="runStep('final_model_training')">
+                    <i class="fas fa-trophy me-2"></i>Final Training
+                </button>
+                <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="quickTrainModels()">
+                    <i class="fas fa-rocket me-2"></i>Quick Train All
+                </button>
+                <a href="/training_center" class="btn btn-success btn-sm w-100">
+                    <i class="fas fa-graduation-cap me-2"></i>Advanced Training Center
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hyperparameter Tuning -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <div>
+                    <h5>Hyperparameter Tuning</h5>
+                    <p class="text-muted mb-0">Optimize model parameters for best performance</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <button class="btn btn-outline-warning btn-sm w-100 mb-2" onclick="runStep('hyperparameter_tuning')">
+                    <i class="fas fa-tune me-2"></i>Auto Tune All
+                </button>
+                <button class="btn btn-outline-warning btn-sm w-100 mb-2" onclick="tuneModel('random_forest')">
+                    <i class="fas fa-tree me-2"></i>Tune Random Forest
+                </button>
+                <button class="btn btn-outline-warning btn-sm w-100 mb-2" onclick="tuneModel('xgboost')">
+                    <i class="fas fa-bolt me-2"></i>Tune XGBoost
+                </button>
+                <a href="/tuning_center" class="btn btn-warning btn-sm w-100">
+                    <i class="fas fa-wrench me-2"></i>Advanced Tuning Center
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Evaluation -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.7s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h5>Model Evaluation</h5>
+                    <p class="text-muted mb-0">Comprehensive model performance analysis</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="runStep('final_model_evaluation')">
+                    <i class="fas fa-analytics me-2"></i>Full Evaluation
+                </button>
+                <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="evaluateModel()">
+                    <i class="fas fa-chart-bar me-2"></i>Quick Evaluation
+                </button>
+                <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="compareModels()">
+                    <i class="fas fa-balance-scale me-2"></i>Compare Models
+                </button>
+                <a href="/evaluation_center" class="btn btn-info btn-sm w-100">
+                    <i class="fas fa-microscope me-2"></i>Advanced Evaluation Center
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pipeline Control -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div>
+                    <h5>Pipeline Control</h5>
+                    <p class="text-muted mb-0">Execute complete workflows and monitor progress</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <a href="/monitor" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                    <i class="fas fa-monitor me-2"></i>Real-time Monitor
+                </a>
+                <a href="/config" class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                    <i class="fas fa-cog me-2"></i>Configuration
+                </a>
+                <a href="/results" class="btn btn-outline-success btn-sm w-100 mb-2">
+                    <i class="fas fa-download me-2"></i>Results & Downloads
+                </a>
+                <button class="btn btn-primary btn-sm w-100" onclick="runFullPipeline()">
+                    <i class="fas fa-rocket me-2"></i>Run Full Pipeline
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="operation-card animate__animated animate__fadeInUp" style="animation-delay: 0.9s;">
+            <div class="operation-header">
+                <div class="operation-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div>
+                    <h5>Quick Actions</h5>
+                    <p class="text-muted mb-0">Common operations and shortcuts</p>
+                </div>
+            </div>
+            
+            <div class="operation-actions">
+                <a href="/predict" class="btn btn-outline-purple btn-sm w-100 mb-2">
+                    <i class="fas fa-crystal-ball me-2"></i>Make Prediction
+                </a>
+                <button class="btn btn-outline-purple btn-sm w-100 mb-2" onclick="exportResults()">
+                    <i class="fas fa-file-export me-2"></i>Export All Results
+                </button>
+                <button class="btn btn-outline-purple btn-sm w-100 mb-2" onclick="cleanupFiles()">
+                    <i class="fas fa-broom me-2"></i>Cleanup Files
+                </button>
+                <button class="btn btn-purple btn-sm w-100" onclick="showQuickStart()">
+                    <i class="fas fa-lightning-bolt me-2"></i>Quick Start Guide
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Operation Status -->
+<div class="row">
+    <div class="col-12">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-terminal text-primary"></i>
+                    Current Operation Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="currentOperation" class="alert alert-secondary">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No operation currently running. Select an operation above to get started.
+                </div>
+                
+                <div id="operationProgress" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span id="operationName">Operation Name</span>
+                        <span id="operationTime">00:00:00</span>
+                    </div>
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="operationLogs" class="terminal-logs" style="display: none;">
+                    <div class="terminal-header">
+                        <span class="terminal-title">Operation Logs</span>
+                        <button class="btn btn-sm btn-outline-light" onclick="clearLogs()">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <div class="terminal-content" id="logsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Start Modal -->
+<div class="modal fade" id="quickStartModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-lightning-bolt me-2"></i>Quick Start Guide
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-1 me-2"></i>First Time Setup</h6>
+                        <ol class="list-group list-group-flush">
+                            <li class="list-group-item">Run Data Ingestion</li>
+                            <li class="list-group-item">Execute Feature Selection</li>
+                            <li class="list-group-item">Process Data</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-2 me-2"></i>Model Development</h6>
+                        <ol class="list-group list-group-flush">
+                            <li class="list-group-item">Train Basic Models</li>
+                            <li class="list-group-item">Hyperparameter Tuning</li>
+                            <li class="list-group-item">Final Model Training</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-3 me-2"></i>Evaluation & Results</h6>
+                        <ol class="list-group list-group-flush">
+                            <li class="list-group-item">Model Evaluation</li>
+                            <li class="list-group-item">Download Results</li>
+                            <li class="list-group-item">Make Predictions</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-rocket me-2"></i>Quick Options</h6>
+                        <button class="btn btn-primary btn-sm w-100 mb-2" onclick="runFullPipeline(); $('#quickStartModal').modal('hide');">
+                            <i class="fas fa-play me-2"></i>Run Complete Pipeline
+                        </button>
+                        <button class="btn btn-success btn-sm w-100 mb-2" onclick="quickTrainModels(); $('#quickStartModal').modal('hide');">
+                            <i class="fas fa-brain me-2"></i>Quick Train & Evaluate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.operation-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.operation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.operation-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.operation-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.operation-actions .btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-outline-purple {
+    color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+.btn-outline-purple:hover {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+}
+
+.btn-purple {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #5a2d9a;
+    border-color: #5a2d9a;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.5rem;
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.terminal-logs {
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.terminal-header {
+    background: #333;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    color: white;
+}
+
+.terminal-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.terminal-content {
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let systemInfoInterval;
+let operationTimer;
+
+// Initialize page
+$(document).ready(function() {
+    refreshSystemInfo();
+    systemInfoInterval = setInterval(refreshSystemInfo, 5000);
+});
+
+function refreshSystemInfo() {
+    fetch('/api/system_info')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const info = data.info;
+                
+                // Update system stats
+                $('#cpuCount').text(info.cpu_count || '-');
+                $('#memoryAvailable').text(formatBytes(info.memory_available) || '-');
+                $('#diskUsage').text((info.disk_usage || 0).toFixed(1) + '%');
+                
+                // Update pipeline status
+                const status = info.pipeline_status;
+                updatePipelineStatus(status);
+            }
+        })
+        .catch(error => console.error('Error fetching system info:', error));
+}
+
+function updatePipelineStatus(status) {
+    const statusElement = $('#pipelineStatus');
+    const iconElement = $('#pipelineStatusIcon i');
+    const currentOpElement = $('#currentOperation');
+    const progressElement = $('#operationProgress');
+    const logsElement = $('#operationLogs');
+    const stopBtn = $('#stopBtn');
+    
+    if (status.running) {
+        statusElement.text('Running');
+        iconElement.attr('class', 'fas fa-circle text-success');
+        
+        currentOpElement.hide();
+        progressElement.show();
+        logsElement.show();
+        stopBtn.show();
+        
+        $('#operationName').text(status.current_step || 'Unknown Operation');
+        updateLogs(status.logs || []);
+        
+        if (!operationTimer) {
+            operationTimer = setInterval(updateOperationTime, 1000);
+        }
+    } else {
+        statusElement.text('Idle');
+        iconElement.attr('class', 'fas fa-circle text-secondary');
+        
+        currentOpElement.show();
+        progressElement.hide();
+        stopBtn.hide();
+        
+        if (operationTimer) {
+            clearInterval(operationTimer);
+            operationTimer = null;
+        }
+        
+        if (status.completed) {
+            currentOpElement.html(`
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                Last operation completed successfully!
+            `).attr('class', 'alert alert-success');
+        } else if (status.error) {
+            currentOpElement.html(`
+                <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
+                Last operation failed: ${status.error}
+            `).attr('class', 'alert alert-danger');
+        }
+    }
+}
+
+function updateOperationTime() {
+    // Simple timer - in real implementation, calculate from start_time
+    const timeElement = $('#operationTime');
+    let current = timeElement.text();
+    let [hours, minutes, seconds] = current.split(':').map(Number);
+    
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    timeElement.text(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+}
+
+function updateLogs(logs) {
+    const logsContent = $('#logsContent');
+    logsContent.html(logs.map(log => `<div>${log}</div>`).join(''));
+    logsContent.scrollTop(logsContent[0].scrollHeight);
+}
+
+function runStep(stepName) {
+    if (confirm(`Start ${stepName.replace('_', ' ').toUpperCase()}?`)) {
+        fetch(`/api/run_step/${stepName}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${stepName.replace('_', ' ').toUpperCase()} started!`, 'success');
+            } else {
+                showToast(`Failed to start: ${data.message}`, 'error');
+            }
+        })
+        .catch(error => {
+            showToast(`Error: ${error.message}`, 'error');
+        });
+    }
+}
+
+function quickTrainModels() {
+    if (confirm('Start quick training for all models (Random Forest, XGBoost, Extra Trees)?')) {
+        fetch('/api/train_models', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                models: ['random_forest', 'xgboost', 'extra_trees'],
+                test_size: 0.2,
+                cv_folds: 5
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Model training started!', 'success');
+            } else {
+                showToast(`Failed to start training: ${data.message}`, 'error');
+            }
+        })
+        .catch(error => {
+            showToast(`Error: ${error.message}`, 'error');
+        });
+    }
+}
+
+function tuneModel(modelName) {
+    if (confirm(`Start hyperparameter tuning for ${modelName.replace('_', ' ').toUpperCase()}?`)) {
+        fetch('/api/hyperparameter_tune', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                model: modelName,
+                iterations: 500,
+                cv_folds: 5
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`Hyperparameter tuning started for ${modelName}!`, 'success');
+            } else {
+                showToast(`Failed to start tuning: ${data.message}`, 'error');
+            }
+        })
+        .catch(error => {
+            showToast(`Error: ${error.message}`, 'error');
+        });
+    }
+}
+
+function evaluateModel() {
+    if (confirm('Start comprehensive model evaluation?')) {
+        fetch('/api/evaluate_model', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                generate_plots: true,
+                detailed_analysis: true,
+                cross_validate: true,
+                feature_importance: true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Model evaluation started!', 'success');
+            } else {
+                showToast(`Failed to start evaluation: ${data.message}`, 'error');
+            }
+        })
+        .catch(error => {
+            showToast(`Error: ${error.message}`, 'error');
+        });
+    }
+}
+
+function runFullPipeline() {
+    if (confirm('Run the complete ML pipeline? This will execute all steps in sequence.')) {
+        window.location.href = '/monitor?run=all';
+    }
+}
+
+function compareModels() {
+    showToast('Model comparison feature coming soon!', 'info');
+}
+
+function exportResults() {
+    window.location.href = '/results';
+}
+
+function cleanupFiles() {
+    if (confirm('Clean up temporary files and old results?')) {
+        showToast('Cleanup feature coming soon!', 'info');
+    }
+}
+
+function showQuickStart() {
+    $('#quickStartModal').modal('show');
+}
+
+function stopPipeline() {
+    if (confirm('Stop the current pipeline operation?')) {
+        showToast('Stop pipeline feature coming soon!', 'info');
+    }
+}
+
+function clearLogs() {
+    $('#logsContent').html('');
+}
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function showToast(message, type) {
+    // Simple toast notification
+    const toast = $(`
+        <div class="toast-notification toast-${type}">
+            <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}-circle me-2"></i>
+            ${message}
+        </div>
+    `);
+    
+    $('body').append(toast);
+    toast.addClass('show');
+    
+    setTimeout(() => {
+        toast.removeClass('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Cleanup intervals when page is unloaded
+$(window).on('beforeunload', function() {
+    if (systemInfoInterval) clearInterval(systemInfoInterval);
+    if (operationTimer) clearInterval(operationTimer);
+});
+</script>
+
+<!-- Toast notification styles -->
+<style>
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+}
+
+.toast-info {
+    background: linear-gradient(135deg, #17a2b8, #6610f2);
+}
+</style>
+{% endblock %}

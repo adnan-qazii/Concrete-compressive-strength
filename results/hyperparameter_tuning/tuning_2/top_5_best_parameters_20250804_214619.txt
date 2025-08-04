@@ -1,0 +1,218 @@
+TOP 5 BEST HYPERPARAMETERS FOR ALL MODELS
+================================================================================
+
+Generated on: 2025-08-04 21:47:19
+
+RANDOM FOREST - TOP 5 PARAMETER COMBINATIONS
+------------------------------------------------------------
+
+Rank #1:
+CV Score: 0.890708 (+/- 0.008934)
+Parameters:
+  bootstrap: False
+  max_depth: 16
+  max_features: sqrt
+  min_samples_leaf: 1
+  min_samples_split: 11
+  n_estimators: 237
+  random_state: 42
+Fit Time: 1.416s
+
+Rank #2:
+CV Score: 0.882133 (+/- 0.004750)
+Parameters:
+  bootstrap: False
+  max_depth: 19
+  max_features: log2
+  min_samples_leaf: 3
+  min_samples_split: 13
+  n_estimators: 104
+  random_state: 42
+Fit Time: 0.872s
+
+Rank #3:
+CV Score: 0.881930 (+/- 0.002014)
+Parameters:
+  bootstrap: False
+  max_depth: 13
+  max_features: log2
+  min_samples_leaf: 5
+  min_samples_split: 3
+  n_estimators: 389
+  random_state: 42
+Fit Time: 2.223s
+
+Rank #4:
+CV Score: 0.880602 (+/- 0.001314)
+Parameters:
+  bootstrap: False
+  max_depth: 10
+  max_features: log2
+  min_samples_leaf: 5
+  min_samples_split: 2
+  n_estimators: 363
+  random_state: 42
+Fit Time: 2.345s
+
+Rank #5:
+CV Score: 0.872970 (+/- 0.002205)
+Parameters:
+  bootstrap: False
+  max_depth: 7
+  max_features: log2
+  min_samples_leaf: 5
+  min_samples_split: 3
+  n_estimators: 393
+  random_state: 42
+Fit Time: 3.679s
+
+
+============================================================
+
+XGBOOST - TOP 5 PARAMETER COMBINATIONS
+------------------------------------------------------------
+
+Rank #1:
+CV Score: 0.919850 (+/- 0.008183)
+Parameters:
+  colsample_bytree: 0.902144564127061
+  gamma: 0.21257793724562235
+  learning_rate: 0.07238249886045664
+  max_depth: 6
+  min_child_weight: 6
+  n_estimators: 240
+  random_state: 42
+  reg_alpha: 0.8422847745949985
+  reg_lambda: 0.44975413336976566
+  subsample: 0.7580600944007257
+Fit Time: 1.297s
+
+Rank #2:
+CV Score: 0.919197 (+/- 0.007903)
+Parameters:
+  colsample_bytree: 0.8430179407605753
+  gamma: 0.08526206184364576
+  learning_rate: 0.029515477895583855
+  max_depth: 6
+  min_child_weight: 9
+  n_estimators: 365
+  random_state: 42
+  reg_alpha: 0.5632882178455393
+  reg_lambda: 0.3854165025399161
+  subsample: 0.6063865008880857
+Fit Time: 2.105s
+
+Rank #3:
+CV Score: 0.918482 (+/- 0.015188)
+Parameters:
+  colsample_bytree: 0.7216968971838151
+  gamma: 0.2623782158161189
+  learning_rate: 0.13958350559263474
+  max_depth: 3
+  min_child_weight: 3
+  n_estimators: 413
+  random_state: 42
+  reg_alpha: 0.5142344384136116
+  reg_lambda: 0.5924145688620425
+  subsample: 0.6185801650879991
+Fit Time: 0.699s
+
+Rank #4:
+CV Score: 0.918379 (+/- 0.009599)
+Parameters:
+  colsample_bytree: 0.9706635463175177
+  gamma: 0.36363599792821044
+  learning_rate: 0.1079622306417506
+  max_depth: 9
+  min_child_weight: 9
+  n_estimators: 239
+  random_state: 42
+  reg_alpha: 0.32533033076326434
+  reg_lambda: 0.388677289689482
+  subsample: 0.7085396127095583
+Fit Time: 1.387s
+
+Rank #5:
+CV Score: 0.911608 (+/- 0.016197)
+Parameters:
+  colsample_bytree: 0.6923575302488596
+  gamma: 0.12051273301300586
+  learning_rate: 0.21497905564763747
+  max_depth: 14
+  min_child_weight: 8
+  n_estimators: 480
+  random_state: 42
+  reg_alpha: 0.17336465350777208
+  reg_lambda: 0.3910606075732408
+  subsample: 0.672894435115225
+Fit Time: 2.511s
+
+
+============================================================
+
+EXTRA TREES - TOP 5 PARAMETER COMBINATIONS
+------------------------------------------------------------
+
+Rank #1:
+CV Score: 0.876853 (+/- 0.005124)
+Parameters:
+  bootstrap: False
+  max_depth: 29
+  max_features: None
+  min_samples_leaf: 5
+  min_samples_split: 8
+  n_estimators: 70
+  random_state: 42
+Fit Time: 0.357s
+
+Rank #2:
+CV Score: 0.876629 (+/- 0.004217)
+Parameters:
+  bootstrap: False
+  max_depth: 16
+  max_features: sqrt
+  min_samples_leaf: 1
+  min_samples_split: 11
+  n_estimators: 237
+  random_state: 42
+Fit Time: 1.051s
+
+Rank #3:
+CV Score: 0.863666 (+/- 0.007539)
+Parameters:
+  bootstrap: False
+  max_depth: 19
+  max_features: None
+  min_samples_leaf: 8
+  min_samples_split: 16
+  n_estimators: 84
+  random_state: 42
+Fit Time: 0.485s
+
+Rank #4:
+CV Score: 0.861895 (+/- 0.000584)
+Parameters:
+  bootstrap: False
+  max_depth: 19
+  max_features: log2
+  min_samples_leaf: 3
+  min_samples_split: 13
+  n_estimators: 104
+  random_state: 42
+Fit Time: 0.563s
+
+Rank #5:
+CV Score: 0.854561 (+/- 0.009295)
+Parameters:
+  bootstrap: False
+  max_depth: 13
+  max_features: log2
+  min_samples_leaf: 5
+  min_samples_split: 3
+  n_estimators: 389
+  random_state: 42
+Fit Time: 1.831s
+
+
+============================================================
+

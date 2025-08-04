@@ -1,0 +1,22 @@
+CONCRETE STRENGTH PREDICTION - MODEL TRAINING RESULTS
+======================================================================
+
+Training Date: 2025-08-04 21:46:13
+Sample Number: 2
+Models Trained: Random Forest, XGBoost, Extra Trees
+Training Samples: 804
+Test Samples: 201
+Features: 18
+
+MODEL PERFORMANCE RANKING (by Test R² Score):
+------------------------------------------------------------
+Rank Model           Test R²    Test RMSE    Test MAE  
+------------------------------------------------------------
+1    XGBoost         0.9336     4.40         2.94      
+2    Extra Trees     0.9131     5.04         3.53      
+3    Random Forest   0.9078     5.19         3.67      
+
+BEST PERFORMING MODEL: XGBoost
+Best Test R² Score: 0.933620
+Best Test RMSE: 4.4039
+Best Test MAE: 2.9370

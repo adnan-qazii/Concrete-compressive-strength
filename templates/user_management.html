@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - ConcreteML AI Platform{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header animate__animated animate__fadeInDown">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-users-cog"></i> User Management
+            </h1>
+            <p class="text-muted mb-0">Manage system users and permissions</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                <i class="fas fa-user-plus"></i> Create New User
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Users List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-users text-primary"></i>
+                    System Users
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-user me-2"></i>Username</th>
+                                <th><i class="fas fa-shield-alt me-2"></i>Role</th>
+                                <th><i class="fas fa-calendar me-2"></i>Created</th>
+                                <th><i class="fas fa-clock me-2"></i>Last Login</th>
+                                <th><i class="fas fa-toggle-on me-2"></i>Status</th>
+                                <th><i class="fas fa-cogs me-2"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for username, user_data in users.items() %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-3">
+                                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ username }}</div>
+                                            {% if username == session.user %}
+                                                <small class="text-primary">(You)</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'primary' if user_data.role == 'admin' else 'secondary' }}">
+                                        <i class="fas fa-{{ 'crown' if user_data.role == 'admin' else 'user' }} me-1"></i>
+                                        {{ user_data.role.title() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div>{{ user_data.created_at[:19].replace('T', ' ') if user_data.created_at else 'Unknown' }}</div>
+                                    {% if user_data.created_by %}
+                                        <small class="text-muted">by {{ user_data.created_by }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user_data.last_login %}
+                                        <div>{{ user_data.last_login[:19].replace('T', ' ') }}</div>
+                                        <small class="text-success">
+                                            <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                                            Recently active
+                                        </small>
+                                    {% else %}
+                                        <span class="text-muted">Never</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user_data.active %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-ban me-1"></i>Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        {% if username != session.user %}
+                                            <button class="btn btn-sm btn-outline-warning" 
+                                                    data-username="{{ username }}"
+                                                    onclick="resetPassword(this.dataset.username)"
+                                                    title="Reset Password">
+                                                <i class="fas fa-key"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-{{ 'danger' if user_data.active else 'success' }}" 
+                                                    data-username="{{ username }}"
+                                                    data-active="{{ user_data.active|lower }}"
+                                                    onclick="toggleUser(this.dataset.username, this.dataset.active === 'true' ? false : true)"
+                                                    title="{{ 'Deactivate' if user_data.active else 'Activate' }} User">
+                                                <i class="fas fa-{{ 'ban' if user_data.active else 'check' }}"></i>
+                                            </button>
+                                        {% endif %}
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                data-username="{{ username }}"
+                                                onclick="viewUserHistory(this.dataset.username)"
+                                                title="View History">
+                                            <i class="fas fa-history"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Statistics -->
+<div class="row mt-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="stat-icon">
+                <i class="fas fa-users text-primary"></i>
+            </div>
+            <div class="stat-number">{{ users|length }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <div class="stat-icon">
+                <i class="fas fa-crown text-warning"></i>
+            </div>
+            <div class="stat-number">{{ users.values() | selectattr('role', 'equalto', 'admin') | list | length }}</div>
+            <div class="stat-label">Administrators</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <div class="stat-number">{{ users.values() | selectattr('active', 'equalto', true) | list | length }}</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <div class="stat-icon">
+                <i class="fas fa-clock text-info"></i>
+            </div>
+            <div class="stat-number">{{ users.values() | selectattr('last_login') | list | length }}</div>
+            <div class="stat-label">Ever Logged In</div>
+        </div>
+    </div>
+</div>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus me-2"></i>Create New User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('create_user_route') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-2"></i>Username <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" required
+                               pattern="[a-zA-Z0-9_]+" title="Only letters, numbers, and underscores allowed">
+                        <div class="form-text">Only letters, numbers, and underscores allowed</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   required minlength="6" placeholder="Minimum 6 characters">
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleModalPassword()">
+                                <i class="fas fa-eye" id="modalPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="role" class="form-label">
+                            <i class="fas fa-shield-alt me-2"></i>Role <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="user">User - Can use ML features</option>
+                            <option value="admin">Admin - Full system access</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>User Permissions:</h6>
+                        <ul class="mb-0">
+                            <li><strong>User:</strong> Access ML pipeline, predictions, results</li>
+                            <li><strong>Admin:</strong> All user permissions + user management + system config</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.user-avatar {
+    flex-shrink: 0;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.5rem;
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.btn-group .btn {
+    margin-right: 2px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleModalPassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('modalPasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+function resetPassword(username) {
+    if (confirm(`Reset password for user "${username}"? They will receive a temporary password.`)) {
+        // In a real implementation, this would make an API call
+        fetch(`/reset_password/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Password reset successful. New password: ${data.password}`);
+            } else {
+                alert('Password reset failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    }
+}
+
+function toggleUser(username, activate) {
+    const action = activate === 'true' ? 'activate' : 'deactivate';
+    if (confirm(`Are you sure you want to ${action} user "${username}"?`)) {
+        // In a real implementation, this would make an API call
+        fetch(`/toggle_user/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ active: activate === 'true' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Operation failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    }
+}
+
+function viewUserHistory(username) {
+    // Redirect to password history page for the user
+    window.open(`/user_history/${username}`, '_blank');
+}
+
+// Auto-focus username in modal
+document.getElementById('createUserModal').addEventListener('shown.bs.modal', function () {
+    document.getElementById('username').focus();
+});
+
+// Generate random password button
+function generatePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('password').value = password;
+    document.getElementById('password').type = 'text';
+    document.getElementById('modalPasswordIcon').className = 'fas fa-eye-slash';
+}
+
+// Add generate password button
+const passwordInput = document.getElementById('password');
+const generateBtn = document.createElement('button');
+generateBtn.type = 'button';
+generateBtn.className = 'btn btn-outline-info btn-sm mt-2';
+generateBtn.innerHTML = '<i class="fas fa-random me-1"></i>Generate Strong Password';
+generateBtn.onclick = generatePassword;
+passwordInput.parentNode.appendChild(generateBtn);
+</script>
+{% endblock %}
