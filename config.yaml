@@ -1,0 +1,29 @@
+# Simple ML Pipeline Configuration
+# Edit this file to customize your pipeline execution
+
+# Steps to run (in order)
+steps:
+  - data_ingestion
+  - feature_selection  
+  - data_processing
+  - model_training
+  - hyperparameter_tuning  
+  - final_model_training
+  - final_model_evaluation
+
+# Python executable path
+python_path: python
+
+# Stop pipeline if any step fails
+stop_on_error: true
+
+# Optional: Skip hyperparameter tuning by default (takes long time)
+# To include hyperparameter tuning, add it to steps list:
+# steps:
+#   - data_ingestion
+#   - feature_selection  
+#   - data_processing
+#   - model_training
+#   - hyperparameter_tuning  # <- Add this line
+#   - final_model_training
+#   - final_model_evaluation
